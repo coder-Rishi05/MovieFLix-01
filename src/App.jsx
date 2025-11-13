@@ -1,7 +1,11 @@
+import MovieCard from "./components/MovieCard";
+
 const App = () => {
   return (
     <div>
-      <h1 className="text-3xl text-center ">This is my Movie Project.</h1>
+      <MovieCard movie={{ title: "Bahubali  ", release_date: "2015", }} />
+      <MovieCard movie={{ title: "Bahubali  ", release_date: "2015", }} />
+      {/* <MovieCard movie={{ title: "  ", release_date: "2015", }} /> */}
     </div>
   );
 };
