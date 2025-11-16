@@ -8,7 +8,7 @@ const MovieCard = ({ movie }) => {
   return (
     <div className="movie-card">
       <div className="movie-post">
-        <img src={""} alt={movie.title} />
+        <img src={"https"} alt={movie.title} />
         <div className="movie-overlay">
           <button className="btn" onClick={favMovie}>
             💖
