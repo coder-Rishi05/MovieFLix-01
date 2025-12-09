@@ -1,4 +1,6 @@
 import React from "react";
+import "../css/MovieCard.css";
+
 
 const MovieCard = ({ movie }) => {
   function favMovie() {
@@ -7,7 +9,7 @@ const MovieCard = ({ movie }) => {
 
   return (
     <div className="movie-card">
-      <div className="movie-post">
+      <div className="movie-poster">
         <img src={"https"} alt={movie.title} />
         <div className="movie-overlay">
           <button className="btn" onClick={favMovie}>

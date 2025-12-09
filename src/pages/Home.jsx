@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import MovieCard from "../components/MovieCard";
+import "../css/Home.css";
 
 const Home = () => {
   const handleSearch = (e) => {
@@ -44,7 +45,7 @@ const Home = () => {
 
   return (
     <div className="home">
-      <form onSubmit={handleSearch} className="" action="">
+      <form onSubmit={handleSearch} className="search-form" action="">
         <input
           type="text"
           value={searchQuery}
@@ -54,7 +55,7 @@ const Home = () => {
           placeholder="search..."
         />
         <button
-          className=""
+          className="search-button"
           onClick={() => searchQuery(searchQuery)}
           type="submit"
         >
@@ -62,7 +63,7 @@ const Home = () => {
         </button>
       </form>
 
-      <div className="movie-grid">
+      <div className="movies-grid">
         {movies.map(
           (movie) =>
             movie.title.toLowerCase().includes(searchQuery) && (
