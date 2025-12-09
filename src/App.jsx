@@ -1,8 +1,7 @@
-import MovieCard from "./components/MovieCard";
 import Favorites from "./pages/Favorites";
 import Home from "./pages/Home";
 import { Routes, Route } from "react-router-dom";
-import Navbar from "../nav/Navbar";
+import Navbar from "./nav/Navbar";
 const App = () => {
   return (
     // <div  className="text-white bg-zinc-800 w-full h-screen"  >
