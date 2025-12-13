@@ -1,32 +1,30 @@
-import React from "react";
-import "../css/MovieCard.css";
-import { Heart } from "lucide-react";
+import "../css/MovieCard.css"
+import { useMovieContext } from "../context/MovieContext"
 
-const MovieCard = ({ movie }) => {
-  function favMovie() {
-    alert("clicked");
-  }
+function MovieCard({movie}) {
+    const {isFavorite, addToFavorites, removeFromFavorites} = useMovieContext()
+    const favorite = isFavorite(movie.id)
 
-  return (
-    <div className="movie-card ">
-      <div className="movie-poster cursor-pointer relative">
-        <img
-          src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-          alt={movie.title}
-        />
-        <div className="movie-overlay ">
-          <button className="btn" onClick={favMovie}>
-           <Heart className="text-white cursor-pointer top-6 right-4 absolute " />
-          </button>
+    function onFavoriteClick(e) {
+        e.preventDefault()
+        if (favorite) removeFromFavorites(movie.id)
+        else addToFavorites(movie)
+    }
+
+    return <div className="movie-card">
+        <div className="movie-poster">
+            <img src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`} alt={movie.title}/>
+            <div className="movie-overlay">
+                <button className={`favorite-btn ${favorite ? "active" : ""}`} onClick={onFavoriteClick}>
+                    ♥
+                </button>
+            </div>
         </div>
-      </div> 
-      <div className="movie-info">
-        <h2 className="text-xl text-amber-50" >{movie.title}</h2>
-        <p>{movie.release_date?.split("-")[0]}</p>
-      </div>
+        <div className="movie-info">
+            <h3>{movie.title}</h3>
+            <p>{movie.release_date?.split("-")[0]}</p>
+        </div>
     </div>
-  );
-};
+}
 
-// original_title
-export default MovieCard;
+export default MovieCard
