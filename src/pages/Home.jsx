@@ -7,20 +7,36 @@ import "../css/Home.css";
 
 function Home() {
   const [searchQuery, setSearchQuery] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+
   const [movies, setMovies] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
   const [heroMovie, setHeroMovie] = useState(null);
 
+  // ✅ Main Data Fetch Effect
   useEffect(() => {
-    const loadPopularMovies = async () => {
+    const fetchMovies = async () => {
+      setLoading(true);
       try {
-        const popularMovies = await getPopularMovies();
-        setMovies(popularMovies);
-        // Set the first movie as hero if available
-        if (popularMovies.length > 0) {
-          setHeroMovie(popularMovies[0]);
+        let data;
+
+        if (searchQuery) {
+          data = await searchMovies(searchQuery, currentPage);
+        } else {
+          data = await getPopularMovies(currentPage);
         }
+
+        setMovies(data.movies);
+        setTotalPages(data.totalPages);
+
+        if (!searchQuery && data.movies.length > 0) {
+          setHeroMovie(data.movies[0]);
+        }
+
+        setError(null);
+        window.scrollTo({ top: 0, behavior: "smooth" });
       } catch (err) {
         console.log(err);
         setError("Failed to load movies...");
@@ -29,10 +45,15 @@ function Home() {
       }
     };
 
-    loadPopularMovies();
-  }, []);
+    fetchMovies();
+  }, [currentPage, searchQuery]);
 
-  // Hero Slider Effect
+  // ✅ Reset page when new search happens
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery]);
+
+  // Hero Slider
   useEffect(() => {
     if (movies.length === 0 || searchQuery) return;
 
@@ -43,30 +64,16 @@ function Home() {
         const nextIndex = (currentIndex + 1) % movies.length;
         return movies[nextIndex];
       });
-    }, 5000);
+    }, 10000);
 
     return () => clearInterval(interval);
   }, [movies, searchQuery]);
 
-  const handleSearch = async (e) => {
+  const handleSearch = (e) => {
     e.preventDefault();
     if (!searchQuery.trim()) return;
-    if (loading) return;
-
-    setLoading(true);
-    try {
-      const searchResults = await searchMovies(searchQuery);
-      setMovies(searchResults);
-      setError(null);
-    } catch (err) {
-      console.log(err);
-      setError("Failed to search movies...");
-    } finally {
-      setLoading(false);
-    }
   };
 
-  console.log(heroMovie);
   return (
     <div className="home">
       {/* Hero Section */}
@@ -88,19 +95,19 @@ function Home() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
-              key={`title-${heroMovie.id}`}
             >
               {heroMovie.title}
             </motion.h1>
+
             <motion.p
               className="hero-overview"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              key={`overview-${heroMovie.id}`}
             >
               {heroMovie.overview}
             </motion.p>
+
             <motion.div
               className="hero-buttons"
               initial={{ opacity: 0, y: 20 }}
@@ -118,7 +125,7 @@ function Home() {
         </div>
       )}
 
-      {/* Search Section */}
+      {/* Search */}
       <div className="content-container">
         <form onSubmit={handleSearch} className="search-form">
           <div className="search-wrapper">
@@ -138,13 +145,51 @@ function Home() {
         {loading ? (
           <div className="loading">Loading...</div>
         ) : (
-          <motion.div className="movies-grid" layout>
-            <AnimatePresence>
-              {movies.map((movie) => (
-                <MovieCard movie={movie} key={movie.id} />
-              ))}
-            </AnimatePresence>
-          </motion.div>
+          <>
+            <motion.div className="movies-grid" layout>
+              <AnimatePresence>
+                {movies.map((movie) => (
+                  <MovieCard movie={movie} key={movie.id} />
+                ))}
+              </AnimatePresence>
+            </motion.div>
+
+            {/* ✅ Pagination Controls */}
+           <div className="pagination flex items-center justify-center gap-6 mt-10 mb-6">
+  
+  <button
+    disabled={currentPage === 1 || loading}
+    onClick={() => setCurrentPage((prev) => prev - 1)}
+    className={`px-5 py-2 rounded-lg font-medium transition-all duration-300 
+    ${
+      currentPage === 1 || loading
+        ? "bg-zinc-700 text-zinc-400 cursor-not-allowed"
+        : "bg-zinc-800 hover:bg-zinc-700 hover:scale-105 active:scale-95 text-white shadow-md"
+    }`}
+  >
+    ← Prev
+  </button>
+
+  <span className="text-zinc-300 font-medium tracking-wide">
+    Page <span className="text-white">{currentPage}</span> of{" "}
+    <span className="text-white">{totalPages}</span>
+  </span>
+
+  <button
+    disabled={currentPage === totalPages || loading}
+    onClick={() => setCurrentPage((prev) => prev + 1)}
+    className={`px-5 py-2 rounded-lg font-medium transition-all duration-300 
+    ${
+      currentPage === totalPages || loading
+        ? "bg-zinc-700 text-zinc-400 cursor-not-allowed"
+        : "bg-zinc-800 hover:bg-zinc-700 hover:scale-105 active:scale-95 text-white shadow-md"
+    }`}
+  >
+    Next →
+  </button>
+
+</div>
+          </>
         )}
       </div>
     </div>

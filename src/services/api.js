@@ -5,22 +5,32 @@ const BASE_URL = "https://api.themoviedb.org/3";
 
 async function handleResponse(response) {
   const data = await response.json();
+
   if (!response.ok) {
     throw new Error(data.status_message || `API error: ${response.status}`);
   }
-  return data.results ?? [];
+
+  return {
+    movies: data.results || [],
+    page: data.page || 1,
+    totalPages: data.total_pages || 1,
+  };
 }
 
-export const getPopularMovies = async () => {
-  const response = await fetch(`${BASE_URL}/movie/popular?api_key=${API_KEY}`);
+// ✅ Accept page parameter
+export const getPopularMovies = async (page = 1) => {
+  const response = await fetch(
+    `${BASE_URL}/movie/popular?api_key=${API_KEY}&page=${page}`
+  );
   return handleResponse(response);
 };
 
-export const searchMovies = async (query) => {
+// ✅ Accept page parameter
+export const searchMovies = async (query, page = 1) => {
   const response = await fetch(
     `${BASE_URL}/search/movie?api_key=${API_KEY}&query=${encodeURIComponent(
-      query,
-    )}`,
+      query
+    )}&page=${page}`
   );
   return handleResponse(response);
 };

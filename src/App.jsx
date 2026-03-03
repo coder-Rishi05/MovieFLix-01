@@ -10,8 +10,8 @@ const App = () => {
   return (
     <ThemeProvider>
       <AuthProvider>
-        <Navbar />
         <MovieProvider>
+          <Navbar />
           <div className="main-content">
             <Routes>
               <Route path="/" element={<Home />} />
