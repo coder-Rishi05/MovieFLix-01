@@ -5,6 +5,7 @@ import { MovieProvider } from "./context/MovieContext";
 import { ThemeProvider } from "./context/ThemeContext";
 import { AuthProvider } from "./context/AuthContext";
 import Navbar from "./nav/Navbar";
+import AIPage from "./pages/AIPage";
 
 const App = () => {
   return (
