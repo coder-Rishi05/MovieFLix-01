@@ -114,3 +114,20 @@ body.light-mode .movie-info h3 {
 body.light-mode .movie-info p {
   color: #666;
 }
+.ask-ai-btn {
+position: absolute;
+bottom: 10px;
+right: 10px;
+background: #2563eb;
+padding: 6px 10px;
+border-radius: 6px;
+font-size: 12px;
+color: white;
+text-decoration: none;
+transition: 0.2s;
+font-weight: 500;
+}
+
+.ask-ai-btn:hover {
+background: #1d4ed8;
+}
